@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Your Skin Concerns</title>
+    <link rel="stylesheet" href="/css/design_concerns.css">
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Open Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+
+        /* Header Section */
+        header {
+            background-color: #5A2D60;
+            padding: 20px;
+            text-align: center;
+            color: #fff;
+        }
+
+        header p {
+            font-size: 24px;
+            color: #ffffff;
+            margin-top: 10px;
+        }
+
+        /* Skin Concerns Section */
+        #skin-concerns-section {
+            text-align: center;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;  
+            align-items: center;      
+            flex-direction: column;   
+        }
+
+        h1 {
+            font-size: 36px;
+            color: #ffffff;
+            font-family: 'Eras Bold ITC';
+        }
+
+        p {
+            font-size: 20px;
+            color: #444;
+            margin-top: 10px;
+            font-weight: 400;
+        }
+
+        /* Skin Concerns Options */
+        .concern-options {
+            display: flex;
+            flex-wrap: nowrap;        
+            justify-content: center;  
+            align-items: center;       
+            overflow-x: auto;          
+            margin-top: 40px;
+        }
+
+        .concern-options label {
+            width: 150px;
+            text-align: center;
+            display: inline-block;
+            margin: 10px;
+        }
+
+        .concern-options input[type="checkbox"] {
+            display: none;
+        }
+
+        .concern-options img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid #ddd;
+            transition: 0.3s;
+        }
+
+        .concern-options input[type="checkbox"]:checked + img {
+            border: 4px solid #5A2D60;
+            transform: scale(1.05);
+        }
+
+        .concern-options p {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #5A2D60;
+        }
+
+        /* Button Styling */
+        button {
+            background-color: #5A2D60;
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+            align-self: center;  
+        }
+
+        button:hover {
+            background-color: #4b1e40;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Select Your Skin Concerns</h1>
+        <p>Select the skin concerns that you have.</p>
+        <div class="header-buttons">
+            <button onclick="window.location.href='user_page.html'">Back</button>
+            <button onclick="window.location.href='front.html'">Logout</button>
+        </div>
+    </header>
+
+    <section id="skin-concerns-section">
+        <form id="concernsForm">
+            <div class="concern-options">
+                <label>
+                    <input type="checkbox" name="skin_concerns[]" value="1">
+                    <img src="/images/fine_lines.jpg" alt="Fine Lines and Wrinkles">
+                    <p>Fine Lines and Wrinkles</p>
+                </label>
+                <label>
+                    <input type="checkbox" name="skin_concerns[]" value="2">
+                    <img src="/images/dullness.jpg" alt="Dullness">
+                    <p>Dullness</p>
+                </label>
+                <label>
+                    <input type="checkbox" name="skin_concerns[]" value="3">
+                    <img src="/images/enlarged_pores.jpg" alt="Enlarged Pores">
+                    <p>Enlarged Pores</p>
+                </label>
+                <label>
+                    <input type="checkbox" name="skin_concerns[]" value="4">
+                    <img src="/images/pigmentation.jpg" alt="Pigmentation">
+                    <p>Pigmentation</p>
+                </label>
+                <label>
+                    <input type="checkbox" name="skin_concerns[]" value="5">
+                    <img src="/images/dark_circles.jpg" alt="Dark Circles">
+                    <p>Dark Circles</p>
+                </label>
+                <label>
+                    <input type="checkbox" name="skin_concerns[]" value="6">
+                    <img src="/images/acne_blemishes.jpg" alt="Acne and Blemishes">
+                    <p>Acne and Blemishes</p>
+                </label>
+                <label>
+                    <input type="checkbox" name="skin_concerns[]" value="7">
+                    <img src="/images/lip_care.jpg" alt="Lip Care">
+                    <p>Lip Care</p>
+                </label>
+                <label>
+                    <input type="checkbox" name="skin_concerns[]" value="8">
+                    <img src="/images/eye_care.jpg" alt="Eye Care">
+                    <p>Eye Care</p>
+                </label>
+                <label>
+                    <input type="checkbox" name="skin_concerns[]" value="none">
+                    <img src="/images/none.jpg" alt="No Skin Concerns">
+                    <p>None of the above</p>
+                </label>
+            </div>
+
+            <!-- Buttons (Initially Hidden) -->
+            <div class="button-container">
+                <button type="button" id="submitButton" style="display: none;">Submit</button>
+                <button type="button" id="nextButton" style="display: none;">Next</button>
+            </div>
+        </form>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('concernsForm');
+            const concernsCheckboxes = document.querySelectorAll('input[name="skin_concerns[]"]');
+            const noneCheckbox = document.querySelector('input[name="skin_concerns[]"][value="none"]');
+            const submitButton = document.getElementById('submitButton');
+            const nextButton = document.getElementById('nextButton');
+
+            // Function to toggle the buttons based on selected options
+            function toggleButtons() {
+                const isAnyConcernSelected = Array.from(concernsCheckboxes).some(checkbox => checkbox.checked && checkbox.value !== "none");
+                const isNoneSelected = noneCheckbox.checked;
+
+                if (isNoneSelected) {
+                    // If "None of the above" is selected, hide Submit, show Next
+                    nextButton.style.display = 'inline-block';
+                    submitButton.style.display = 'none';
+                } else if (isAnyConcernSelected) {
+                    // If any other option is selected, show Submit, hide Next
+                    submitButton.style.display = 'inline-block';
+                    nextButton.style.display = 'none';
+                } else {
+                    // If no option is selected, hide both buttons
+                    submitButton.style.display = 'none';
+                    nextButton.style.display = 'none';
+                }
+            }
+
+            // Disable "None" when any other option is selected
+            concernsCheckboxes.forEach(checkbox => {
+                if (checkbox.value !== "none") {
+                    checkbox.addEventListener('change', function () {
+                        if (noneCheckbox.checked) {
+                            noneCheckbox.checked = false;  // Uncheck "None of the above" if another checkbox is checked
+                        }
+                        noneCheckbox.disabled = true;  // Disable "None of the above" checkbox
+                        toggleButtons();  // Update button visibility
+                    });
+                }
+            });
+
+            // Enable "None" if no other concerns are selected
+            concernsCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function () {
+                    if (Array.from(concernsCheckboxes).every(cb => !cb.checked)) {
+                        noneCheckbox.disabled = false;  // Re-enable "None of the above" checkbox
+                    }
+                    toggleButtons();  // Update button visibility
+                });
+            });
+
+            // Add event listener to "None" checkbox to disable other options if "None" is selected
+            noneCheckbox.addEventListener('change', function () {
+                if (noneCheckbox.checked) {
+                    // Uncheck all other options when "None" is selected
+                    concernsCheckboxes.forEach(checkbox => {
+                        if (checkbox.value !== "none") {
+                            checkbox.checked = false;
+                        }
+                    });
+                }
+                toggleButtons();  // Update button visibility
+            });
+
+            // Initialize the form based on the current state of "None" checkbox and others
+            toggleButtons();
+
+            // Handle Submit button click
+            submitButton.addEventListener('click', function () {
+                const selectedConcerns = Array.from(document.querySelectorAll('input[name="skin_concerns[]"]:checked'));
+
+                // Check if "None of the above" is selected
+                if (selectedConcerns.some(checkbox => checkbox.value === 'none')) {
+                    // If "None of the above" is selected, redirect to the skin type selection page
+                    window.location.href = 'type.html';
+                } else {
+                    // Get the IDs of the selected concerns
+                    const concernIds = selectedConcerns.map(checkbox => checkbox.value);
+                    const queryString = concernIds.length > 0 ? `products.html?concerns=${concernIds.join(',')}` : 'products.html';
+                    window.location.href = queryString; // Redirect to the products page with selected concerns
+                }
+            });
+
+            // Handle Next button click (when "None of the above" is selected)
+            nextButton.addEventListener('click', function () {
+                window.location.href = 'type.html'; // Redirect to skin type selection page
+            });
+        });
+    </script>
+</body>
+</html>
+
+
+	

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkinHeal</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #F7F7F7; /* Background color */
+            color: #333;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: #611128; /* Header color */
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 3em;
+        }
+
+        /* Skin Type Selection */
+        .hero {
+            text-align: center;
+            padding: 50px;
+        }
+
+        .skin-type-options {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .skin-type-options label {
+            width: 150px;
+            text-align: center;
+            display: inline-block;
+        }
+
+        .skin-type-options input {
+            display: none;
+        }
+
+        .skin-type-options img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 4px solid #ddd; /* Default border thickness */
+            transition: 0.3s;
+        }
+
+        .skin-type-options input:checked + img {
+            border: 4px solid #611128; /* Active state border color */
+            transform: scale(1.1);
+        }
+
+        button {
+            background-color: #611128; /* Button color */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #823D50; /* Hover color */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>SELECT YOUR SKIN TYPE</h1>
+
+        <!-- Back and Logout Buttons -->
+        <div class="header-buttons">
+            <button id="backButton">Back</button>
+            <button id="logoutButton" onclick="window.location.href='front.html'">Logout</button>
+        </div>
+    </header>
+
+    <section class="hero">
+        <h2>Select Your Skin Type</h2>
+        <p>Select your skin type to proceed</p>
+
+        <div class="skin-type-options">
+            <label>
+                <input type="radio" name="skin_type" value="1" required>
+                <img src="/images/normal_skin.jpg" alt="Normal Skin">
+                <p>Normal</p>
+            </label>
+            <label>
+                <input type="radio" name="skin_type" value="2">
+                <img src="/images/dry_skin.jpg" alt="Dry Skin">
+                <p>Dry</p>
+            </label>
+            <label>
+                <input type="radio" name="skin_type" value="3">
+                <img src="/images/combination_skin.jpg" alt="Combination Skin">
+                <p>Combination</p>
+            </label>
+            <label>
+                <input type="radio" name="skin_type" value="4">
+                <img src="/images/oily_skin.jpg" alt="Oily Skin">
+                <p>Oily</p>
+            </label>
+            <label>
+                <input type="radio" name="skin_type" value="5">
+                <img src="/images/sensitive_skin.jpg" alt="Sensitive Skin">
+                <p>Sensitive</p>
+            </label>
+        </div>
+
+        <button id="submitButton" disabled>Submit</button>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const submitButton = document.getElementById('submitButton');
+            const radioButtons = document.querySelectorAll('input[name="skin_type"]');
+            const backButton = document.getElementById('backButton');
+            
+            // Function to enable the submit button if a skin type is selected
+            function enableSubmitButton() {
+                const isAnySelected = document.querySelector('input[name="skin_type"]:checked');
+                submitButton.disabled = !isAnySelected;
+            }
+
+            radioButtons.forEach(button => {
+                button.addEventListener('change', enableSubmitButton);
+            });
+
+            submitButton.addEventListener('click', function() {
+                const selectedSkinType = document.querySelector('input[name="skin_type"]:checked').value;
+                console.log("Navigating to products page with skin type:", selectedSkinType);
+                window.location.href = `products.html?type=${selectedSkinType}`;
+            });
+
+            enableSubmitButton();
+
+            // Logic for the Back Button
+            const referrer = document.referrer; // Get the referring page
+
+            if (referrer.includes('user_page.html')) {
+                // If coming from user_page.html, the Back button goes back to user_page.html
+                backButton.addEventListener('click', function() {
+                    window.location.href = 'user_page.html';
+                });
+            } else if (referrer.includes('concerns.html')) {
+                // If coming from concerns.html, the Back button goes back to concerns.html
+                backButton.addEventListener('click', function() {
+                    window.location.href = 'concerns.html';
+                });
+            } else {
+                // Default case, if no valid referrer, Back button can go to user_page.html
+                backButton.addEventListener('click', function() {
+                    window.location.href = 'user_page.html';
+                });
+            }
+        });
+    </script>
+</body>
+</html>

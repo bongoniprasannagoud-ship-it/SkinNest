@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile Page</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Open Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #F7F7F7;
+        }
+
+        /* Header Section */
+        header {
+            background-color: #89868f;
+            padding: 20px;
+            text-align: center;
+            color: #2C3E50;
+        }
+
+        h1 {
+            font-size: 36px;
+            color: #611128;
+        }
+
+        /* Logout Button Section */
+        .logout-section {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .logout-btn {
+            background-color: #611128; /* Consistent with other buttons */
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+        }
+
+        .logout-btn:hover {
+            background-color: #611128; /* Same hover effect as other buttons */
+        }
+
+        /* Suggest Skin Care Products Section */
+        .suggestion {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        .suggestion h2 {
+            font-size: 24px;
+            color: #611128;
+        }
+
+        .suggestion p {
+            font-size: 18px;
+            color: #89868f;
+        }
+
+        .suggestion-btn {
+            background-color: #611128;
+            color: white;
+            padding: 15px 35px;
+            border-radius: 25px;
+            font-size: 16px;
+            text-decoration: none;
+            margin: 10px;
+        }
+
+        .suggestion-btn:hover {
+            background-color: #611128;
+        }
+
+        /* Ask Questions Section */
+        .ask-questions {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .ask-questions h2 {
+            font-size: 24px;
+            color: #611128;
+        }
+
+        .ask-questions button {
+            background-color: #611128;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .ask-questions button:hover {
+            background-color: #611128;
+        }
+
+        /* Modal (Chatbot) Styles */
+        .chatbot-modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 60%;
+            max-width: 700px;
+        }
+
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #611128;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <h1>Welcome to Your Profile</h1>
+    </header>
+
+    <!-- Logout Button -->
+    <section class="logout-section">
+        <button id="logout-btn" class="logout-btn">Logout</button>
+    </section>
+
+    <!-- Suggest Skin Care Products Section -->
+    <section class="suggestion">
+        <h2>Looking for the best skin care products?</h2>
+        <p>Explore personalized recommendations just for you!</p>
+        <a href="concerns.html" class="suggestion-btn">Suggest Products by Skin Concern</a>
+        <a href="type.html" class="suggestion-btn">Suggest Products by Skin Type</a>
+    </section>
+
+    <!-- Ask Questions Section -->
+    <section class="ask-questions">
+        <h2>Need Help? Ask us anything!</h2>
+        <button id="chatbot-btn">Have Questions?</button>
+    </section>
+
+    <!-- Chatbot Modal (hidden by default) -->
+    <div id="chatbot-modal" class="chatbot-modal" style="display:none;">
+        <div class="modal-content">
+            <span class="close" id="close-chatbot">&times;</span>
+            <iframe src="chatbot.html" width="100%" height="500"></iframe>
+        </div>
+    </div>
+
+    <!-- JavaScript File -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ensure the elements exist before attaching event listeners
+            const logoutBtn = document.getElementById('logout-btn');
+            const chatbotBtn = document.getElementById('chatbot-btn');
+            const closeChatbotBtn = document.getElementById('close-chatbot');
+            const chatbotModal = document.getElementById('chatbot-modal');
+
+            if (logoutBtn) {
+                // Logout functionality
+                logoutBtn.addEventListener('click', async function() {
+                    const response = await fetch('http://localhost:3000/api/users/logout', {
+                        method: 'POST',
+                        credentials: 'include' // Include credentials to maintain session
+                    });
+
+                    if (response.ok) {
+                        alert('Logged out successfully!');
+                        window.location.href = 'front.html'; // Redirect after logout
+                    } else {
+                        alert('Failed to log out. Please try again.');
+                    }
+                });
+            }
+
+            if (chatbotBtn) {
+                // Open Chatbot Modal
+                chatbotBtn.addEventListener('click', function(event) {
+                    event.preventDefault(); // Prevent default anchor behavior
+                    if (chatbotModal) {
+                        chatbotModal.style.display = 'flex'; // Show the modal
+                    }
+                });
+            }
+
+            if (closeChatbotBtn) {
+                // Close the modal when the close button is clicked
+                closeChatbotBtn.addEventListener('click', function() {
+                    if (chatbotModal) {
+                        chatbotModal.style.display = 'none'; // Hide the modal
+                    }
+                });
+            }
+
+            // Close the modal if the user clicks anywhere outside of the modal content
+            window.onclick = function(event) {
+                if (chatbotModal && event.target === chatbotModal) {
+                    chatbotModal.style.display = 'none'; // Close modal if clicking outside modal
+                }
+            };
+        });
+    </script>
+</body>
+</html>

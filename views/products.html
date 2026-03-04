@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recommended Products</title>
+    <style>
+      /* Basic styling for products page */
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+        color: #333;
+        margin: 0;
+        padding: 0;
+      }
+
+      header {
+        background-color: #4CAF50; /* Original header color */
+        color: white;
+        padding: 1em;
+        text-align: center;
+      }
+
+      h1 {
+        margin: 0;
+      }
+
+      /* Styling for header buttons (Back & Logout) */
+      .header-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-top: 10px;
+      }
+
+      .header-buttons button {
+        background-color: #4CAF50; /* Match header background color */
+        color: white; /* Ensure the text is visible */
+        border: 2px solid #4CAF50; /* Matching border color */
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+      }
+
+      .header-buttons button:hover {
+        background-color: #45a049; /* Darker green shade on hover */
+        border-color: #45a049; /* Darker green border on hover */
+      }
+
+      /* Product List */
+      #products-list {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 20px;
+        gap: 20px;
+      }
+
+      .product-item {
+        background-color: white;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 16px;
+        width: 200px;
+        text-align: center;
+        transition: transform 0.2s;
+      }
+
+      .product-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      .product-image {
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+      }
+
+      .product-name {
+        font-size: 1.2em;
+        margin: 10px 0;
+        color: #333;
+      }
+
+      .product-link {
+        display: inline-block;
+        margin-top: 10px;
+        padding: 8px 12px;
+        background-color: #4CAF50; /* Same color as header */
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+      }
+
+      .product-link:hover {
+        background-color: #45a049; /* Darker green shade on hover */
+      }
+
+      /* OK Button Styling */
+      .ok-button-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+      }
+
+      .ok-button {
+        background-color: #4CAF50; /* Original button color */
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+      }
+
+      .ok-button:hover {
+        background-color: #45a049; /* Darker green shade for hover effect */
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <h1>Recommended Products</h1>
+      <!-- Header Buttons for Back and Logout -->
+      <div class="header-buttons">
+        <button id="backButton">Back</button>
+        <button id="logoutButton">Logout</button>
+      </div>
+    </header>
+
+    <section id="products-list">
+      <!-- Products will be rendered here by products.js -->
+    </section>
+
+    <!-- OK button at the end -->
+    <div class="ok-button-container">
+      <button id="okButton" class="ok-button">OK</button>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        // Get the query parameters from the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const skinType = urlParams.get('type');
+        const concerns = urlParams.get('concerns');
+
+        // Element to display the products
+        const productsList = document.getElementById('products-list');
+
+        // Fetch products based on skin type or concerns
+        async function fetchProducts() {
+          let apiUrl = 'http://localhost:3000/api/products/';
+
+          // Determine the URL to fetch based on the skin type or concerns
+          if (skinType) {
+            apiUrl = `http://localhost:3000/api/products/type?type=${skinType}`;
+          } else if (concerns) {
+            apiUrl = `http://localhost:3000/api/products/concerns?concerns=${concerns}`;
+          } else {
+            productsList.innerHTML = '<p>No skin type or concerns selected in the URL. Please try again.</p>';
+            return;
+          }
+
+          // Fetch the products
+          try {
+            const response = await fetch(apiUrl, { credentials: 'same-origin' });
+
+            // Handle response error
+            if (!response.ok) {
+              throw new Error('Failed to fetch products');
+            }
+
+            // Parse the JSON response
+            const products = await response.json();
+
+            // Display the products or show a message if none are found
+            if (products.length === 0) {
+              productsList.innerHTML = '<p>No products found matching your criteria.</p>';
+            } else {
+              displayProducts(products);
+            }
+          } catch (error) {
+            console.error('Error fetching products:', error);
+            productsList.innerHTML = '<p>Failed to load products. Please try again later.</p>';
+          }
+        }
+
+        // Function to display products on the page
+        function displayProducts(products) {
+          productsList.innerHTML = ''; // Clear any existing products
+
+          // Loop through each product and generate HTML
+          products.forEach(product => {
+            const productElement = document.createElement('div');
+            productElement.classList.add('product-item');
+
+            // Build the product display structure with description
+            productElement.innerHTML = `
+                <div class="product-image-container">
+                    <img src="${product.image}" alt="${product.name}" class="product-image" />
+                </div>
+                <div class="product-details">
+                    <h3 class="product-name">${product.name}</h3>
+                    <p class="product-description">${product.description}</p>
+                    <a href="${product.link}" class="view-product" target="_blank">View Product</a>
+                </div>
+            `;
+
+            // Append the product to the list
+            productsList.appendChild(productElement);
+          });
+        }
+
+        // Call the function to fetch products
+        fetchProducts();
+
+        // Back button logic
+        const backButton = document.getElementById('backButton');
+        backButton.addEventListener('click', function () {
+          // Check if the current page is coming from the type.html or concerns.html page
+          const referrer = document.referrer;
+          if (referrer.includes('type.html')) {
+            // If coming from type.html, go back to type.html
+            window.location.href = 'type.html';
+          } else if (referrer.includes('concerns.html')) {
+            // If coming from concerns.html, go back to concerns.html
+            window.location.href = 'concerns.html';
+          } else {
+            // Default to concerns.html if there's no valid referrer
+            window.location.href = 'concerns.html';
+          }
+        });
+
+        // Logout button logic
+        const logoutButton = document.getElementById('logoutButton');
+        logoutButton.addEventListener('click', function () {
+          // Redirect to the front page (front.html)
+          window.location.href = 'front.html';
+        });
+
+        // OK button logic
+        const okButton = document.getElementById('okButton');
+        okButton.addEventListener('click', function () {
+          // Redirect to user_page.html
+          window.location.href = 'user_page.html';
+        });
+      });
+    </script>
+  </body>
+</html>

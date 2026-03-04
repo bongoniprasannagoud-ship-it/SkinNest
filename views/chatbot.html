@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot - SkinHeal</title>
+    <style>
+	/* Chatbot Styling */
+	body {
+	    font-family: 'Open Sans', sans-serif;
+	    background-color: #F7F7F7;
+	    margin: 0;
+	    padding: 0;
+	}
+
+	/* Chatbox Container */
+	#chatbox-container {
+	    position: fixed;
+	    bottom: 20px;
+	    right: 20px;
+	    width: 350px;
+	    height: 500px;
+	    background-color: #fff;
+	    border-radius: 10px;
+	    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+	    display: flex;
+	    flex-direction: column;
+	}
+	
+	/* Chatbox Header */
+	#chatbox {
+	    flex-grow: 1;
+	    display: flex;
+	    flex-direction: column;
+	    justify-content: space-between;
+	    height: 100%;
+	}
+
+	/* Chat Log (Conversation History) */
+	#chat-log {
+	    flex-grow: 1;
+	    padding: 20px;
+	    overflow-y: auto; /* Make chat log scrollable */
+	    background-color: #F1F1F1;
+	    border-bottom: 1px solid #ddd;
+	    border-radius: 10px;
+	    margin-bottom: 20px;
+	    max-height: 380px; /* Limit the height of the chat log */
+	}
+
+	/* Chat Messages */
+	.chat-message {
+	    padding: 10px;
+	    border-radius: 8px;
+	    margin-bottom: 10px;
+	    max-width: 80%;
+	    word-wrap: break-word;
+	}
+	
+	/* Bot Messages */
+	.chat-message.bot-message {
+	    background-color: #89868f;
+	    color: #fff;
+	    margin-left: 0;
+	    margin-right: auto;
+	}
+	
+	/* User Messages */
+	.chat-message.user-message {
+	    background-color: #611128;
+	    color: #fff;
+	    margin-right: 0;
+	    margin-left: auto;
+	}
+
+	/* Chat Input Section */
+	#chat-input {
+	    padding: 15px;
+	    background-color: #f1f1f1;
+	    border-radius: 10px;
+	    display: flex;
+	    justify-content: space-between;
+	    align-items: center;
+	}
+
+	/* Dropdown Menu */
+	#question-select {
+	    width: 65%;
+	    padding: 12px;
+	    border-radius: 5px;
+	    border: 1px solid #ddd;
+	    font-size: 16px;
+	    color: #333;
+	    background-color: #fff;
+	    transition: border-color 0.3s;
+	}
+
+	#question-select:focus {	
+	    border-color: #FF6347;
+	    outline: none;
+	}
+
+	/* Send Button */
+	#send-btn {
+	    background-color: #611128;
+	    color: #fff;
+	    border: none;
+	    padding: 12px 20px;
+	    font-size: 16px;
+	    border-radius: 25px;
+	    cursor: pointer;
+	    margin-left: 10px;
+	    transition: background-color 0.3s ease;
+	}
+
+	#send-btn:hover {
+	    background-color: #FF6347;
+	}
+
+	/* Close Button */
+	.close {
+	    color: #611128;
+	    font-size: 28px;
+	    font-weight: bold;
+	    position: absolute;
+	    top: 10px;
+	    right: 10px;
+	    cursor: pointer;
+	}
+	
+	.close:hover,
+	.close:focus {
+	    color: #FF4500;
+	    text-decoration: none;
+	    cursor: pointer;
+	}
+
+	/* Modal Chatbox */
+	.chatbot-modal {
+	    display: none;
+	    position: fixed;
+	    z-index: 1;
+	    left: 0;
+	    top: 0;
+	    width: 100%;
+	    height: 100%;
+	    background-color: rgba(0, 0, 0, 0.4);
+	    padding-top: 60px;
+	}
+
+	.modal-content {
+	    background-color: #fff;
+	    margin: 5% auto;
+	    padding: 30px;
+	    border: 1px solid #888;
+	    width: 70%;
+	    border-radius: 10px;
+	    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+	    animation: slideIn 0.5s;
+	}
+
+	/* Animation for Modal */
+	@keyframes slideIn {
+	    0% { transform: translateY(-50%); opacity: 0; }
+	    100% { transform: translateY(0); opacity: 1; }
+	}
+	
+	/* Scrollbar */
+	#chat-log::-webkit-scrollbar {
+	    width: 6px;
+	}
+
+	#chat-log::-webkit-scrollbar-thumb {
+	    background-color: #611128;
+	    border-radius: 10px;
+	}
+
+	#chat-log::-webkit-scrollbar-track {
+	    background-color: #f1f1f1;
+	}
+     </style>
+</head>
+<body>
+    <div id="chatbox-container">
+        <div id="chatbox">
+            <div id="chat-log">
+                <div class="chat-message bot-message">Hello! How can I help you with your skincare concerns today?</div>
+            </div>
+            <div id="chat-input">
+                <select id="question-select">
+                    <option value="">Select a question...</option>
+                    <option value="I have a concern">I have a concern</option>
+                    <option value="Hello, I have a concern">Hello, I have a concern</option>
+                    <option value="I need help with skincare">I need help with skincare</option>
+                    <option value="My skin is dry">My skin is dry</option>
+                    <option value="I have oily skin">I have oily skin</option>
+                    <option value="Can you recommend products for acne?">Can you recommend products for acne?</option>
+                    <option value="How to treat acne?">How to treat acne?</option>
+                    <option value="What is a good moisturizer?">What is a good moisturizer?</option>
+                    <option value="My skin is sensitive">My skin is sensitive</option>
+                    <option value="What should I use for sensitive skin?">What should I use for sensitive skin?</option>
+                    <option value="I have combination skin">I have combination skin</option>
+                    <option value="What should I use for combination skin?">What should I use for combination skin?</option>
+                    <option value="Can you help with my pimples?">Can you help with my pimples?</option>
+                    <option value="How do I treat dark spots?">How do I treat dark spots?</option>
+                    <option value="My skin feels tight and dry">My skin feels tight and dry</option>
+                    <option value="I have large pores">I have large pores</option>
+                    <option value="How can I reduce my pores?">How can I reduce my pores?</option>
+                    <option value="My skin gets red easily">My skin gets red easily</option>
+                    <option value="What products are good for hyperpigmentation?">What products are good for hyperpigmentation?</option>
+                    <option value="I have wrinkles on my face">I have wrinkles on my face</option>
+                    <option value="How do I get rid of wrinkles?">How do I get rid of wrinkles?</option>
+                    <option value="My skin looks dull">My skin looks dull</option>
+                    <option value="How do I brighten my skin?">How do I brighten my skin?</option>
+                    <option value="My skin is oily but I get dry patches">My skin is oily but I get dry patches</option>
+                    <option value="What is the best sunscreen for oily skin?">What is the best sunscreen for oily skin?</option>
+                    <option value="Can you suggest some anti-aging products?">Can you suggest some anti-aging products?</option>
+                    <option value="What are some good products for my acne scars?">What are some good products for my acne scars?</option>
+                    <option value="How do I get rid of acne?">How do I get rid of acne?</option>
+                    <option value="What are some home remedies for acne?">What are some home remedies for acne?</option>
+                    <option value="What should I use for acne scars?">What should I use for acne scars?</option>
+                    <option value="How can I treat dry skin at home?">How can I treat dry skin at home?</option>
+                    <option value="Can you recommend a good moisturizer for dry skin?">Can you recommend a good moisturizer for dry skin?</option>
+                    <option value="What is the best treatment for oily skin?">What is the best treatment for oily skin?</option>
+                    <option value="How do I control oily skin?">How do I control oily skin?</option>
+                    <option value="What products are good for sensitive skin?">What products are good for sensitive skin?</option>
+                    <option value="Can I use retinol for sensitive skin?">Can I use retinol for sensitive skin?</option>
+                    <option value="What is the best sunscreen for sensitive skin?">What is the best sunscreen for sensitive skin?</option>
+                    <option value="How can I prevent wrinkles?">How can I prevent wrinkles?</option>
+                    <option value="What are some anti-aging tips?">What are some anti-aging tips?</option>
+                    <option value="Can you recommend products for dark circles under my eyes?">Can you recommend products for dark circles under my eyes?</option>
+                    <option value="What is the best skincare routine for combination skin?">What is the best skincare routine for combination skin?</option>
+                    <option value="How can I treat hyperpigmentation?">How can I treat hyperpigmentation?</option>
+                    <option value="How do I get rid of sunspots?">How do I get rid of sunspots?</option>
+                    <option value="What is the best cleanser for acne-prone skin?">What is the best cleanser for acne-prone skin?</option>
+                    <option value="Can you recommend a serum for glowing skin?">Can you recommend a serum for glowing skin?</option>
+                    <option value="What should I use for oily T-zone?">What should I use for oily T-zone?</option>
+                    <option value="How can I reduce redness on my face?">How can I reduce redness on my face?</option>
+                    <option value="What products can I use for dark spots on my skin?">What products can I use for dark spots on my skin?</option>
+                    <option value="How do I get rid of blackheads?">How do I get rid of blackheads?</option>
+                    <option value="What is the best way to exfoliate my skin?">What is the best way to exfoliate my skin?</option>
+                    <option value="What skincare routine is best for acne scars?">What skincare routine is best for acne scars?</option>
+                    <option value="What is a good night cream for anti-aging?">What is a good night cream for anti-aging?</option>
+                    <option value="Can I use vitamin C serum in the morning?">Can I use vitamin C serum in the morning?</option>
+                    <option value="What ingredients should I avoid for sensitive skin?">What ingredients should I avoid for sensitive skin?</option>
+                    <option value="Can you suggest a moisturizer for oily skin?">Can you suggest a moisturizer for oily skin?</option>
+                    <option value="What should I use for my dry lips?">What should I use for my dry lips?</option>
+                    <option value="How do I minimize pores on my face?">How do I minimize pores on my face?</option>
+                </select>
+                <button id="send-btn">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+	document.addEventListener("DOMContentLoaded", function() {
+	    const sendBtn = document.getElementById("send-btn");
+	    const questionSelect = document.getElementById("question-select");
+	    const chatLog = document.getElementById("chat-log");
+
+	    // Function to add a message to the chat log
+	    function appendMessage(sender, message) {
+	        const messageDiv = document.createElement('div');
+	        messageDiv.classList.add('chat-message', sender === 'bot' ? 'bot-message' : 'user-message');
+	        messageDiv.innerText = message;
+	        chatLog.appendChild(messageDiv);
+	    }
+	
+	    // Handle send button click
+	    sendBtn.addEventListener('click', async function() {
+	        const selectedQuestion = questionSelect.value;
+	
+	        if (!selectedQuestion) {
+	            return; // Do nothing if no question is selected
+	        }
+
+	        // Display the user's message in the chat window
+	        appendMessage('user', selectedQuestion);
+	
+	        try {
+	            // Send the selected question to the server
+	            const response = await fetch('http://localhost:3000/api/chatbot', {
+	                method: 'POST',
+	                headers: {
+	                    'Content-Type': 'application/json',
+	                },
+	                body: JSON.stringify({ message: selectedQuestion }),
+	            });
+	
+	            const data = await response.json();
+	            const botAnswer = data.answer;
+
+	            // Display the bot's response in the chat window
+	            appendMessage('bot', botAnswer);
+	        } catch (error) {
+	            console.error("Error:", error);
+	            appendMessage('bot', "Sorry, something went wrong. Please try again.");
+	        }
+	    });
+	});
+      </script>
+    </body>
+</html>

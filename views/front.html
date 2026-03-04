@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkinHeal</title>
+    <style>
+        /* General Styles */
+      * {
+	    margin: 0;
+	    padding: 0;
+	    box-sizing: border-box;
+	}
+
+	body {
+	    font-family: 'Open Sans', sans-serif;
+	    margin: 0;
+	    padding: 0;
+	    background-image: url('/bg.jpg');
+	    background-size: cover;
+	    background-position: center center;
+	    background-repeat: no-repeat;
+	    background-attachment: fixed;
+	    color: #333;
+	    height: 100vh;
+	    display: flex;
+	    flex-direction: column;
+	}
+
+	header {
+	    margin: 0;
+	    padding: 0;
+	}
+
+
+        /* Hero Section */
+        .hero {
+            padding: 100px 30px;
+            color: #ffffff;
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+            border-radius: 10px;
+            margin: 0;
+        }
+
+        /* Hero Heading */
+        .hero h1 {
+            font-family: 'Eras Bold ITC';
+            font-size: 90px;
+            font-weight: 800;
+            color: #611128;
+            margin: 0;
+            text-align: center;
+            letter-spacing: 4px;
+            text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Hero Subheading Text */
+        .hero p {
+            font-family: 'Roboto', sans-serif;
+            font-size: 24px;
+            font-weight: 400;
+            color: #ffffff;
+            margin-top: 20px;
+            line-height: 1.6;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+            opacity: 0.8;
+        }
+
+        /* How It Works Section */
+        .how-it-works {
+            font-family: "Bahnschrift", sans-serif;
+            display: flex;
+            color:#e0f7fa;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 40px;
+            margin: 0;
+        }
+
+        /* Step Elements in How It Works Section */
+        .step {
+            font-family: "Bahnschrift", sans-serif;
+            color:#e0f7fa;
+            margin: 20px;
+            text-shadow: 0.5px 0px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        /* Modal (Hidden by default) */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4); /* Dark overlay */
+            padding-top: 60px;
+        }
+
+        /* Modal Content */
+        .modal-content {
+            background-color: #fff;
+            margin: 5% auto;
+            padding: 30px;
+            border: 1px solid #888;
+            width: 70%;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Close Button */
+        .close {
+            color: #611128;
+            font-size: 28px;
+            font-weight: bold;
+            float: right;
+        }
+
+        .close:hover,
+        .close:focus {
+            color:#611128;
+            cursor: pointer;
+        }
+
+        /* General Button Styling */
+        button {
+            background-color: #611128;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 16px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Login and Signup Modal Styling */
+        #login-modal,
+        #signup-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Slightly darker overlay */
+            padding-top: 60px;
+        }
+
+        /* Login Form Styling */
+        #login-form,
+        #signup-form {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            width: 50%;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Input Field Styling */
+        input {
+            margin: 10px 0;
+            padding: 12px;
+            width: calc(100% - 24px);
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            border-color: #FF6347;
+            outline: none;
+        }
+
+        /* Home Button Styling */
+        .home-btn {
+            background-color: #611128;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <h1>SkinHeal</h1>
+        <h2>Your Personalized Skincare Resource</h2>
+        <p>Explore a range of products tailored to your skin type and concerns.</p>
+        <button id="login-btn">LOGIN</button>
+        <button id="start-journey-btn">Start your skincare journey</button>
+    </div>
+
+    <div class="how-it-works">
+        <h3>How SkinHeal Works</h3>
+        <div class="step">
+            <h4>Step 1: Answer the questions</h4>
+            <p>Answer the questions to help us understand your skin concerns.</p>
+        </div>
+        <div class="step">
+            <h4>Step 2: Get Personalized Recommendations</h4>
+            <p>Our website suggests skincare products for your concerns and skin type.</p>
+        </div>
+        <div class="step">
+            <h4>Step 3: Achieve Healthy, Glowing Skin</h4>
+            <p>Use the suggested products and transform your skin.</p>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <span class="close" id="close-login-modal">&times;</span>
+            <div id="login-form">
+                <h2>Login</h2>
+                <form>
+                    <input type="text" id="login-username" placeholder="Username" required>
+                    <input type="password" id="login-password" placeholder="Password" required>
+                    <button type="button" id="login-submit">Login</button>
+                    <p>Don't have an account? <button type="button" id="show-signup">Sign Up</button></p>
+                    <button type="button" class="home-btn" id="home-login-btn">Home</button>
+                </form>
+            </div>
+            <div id="signup-form" style="display: none;">
+                <h2>Sign Up</h2>
+                <form>
+                    <input type="text" id="signup-username" placeholder="Username" required>
+                    <input type="email" id="signup-email" placeholder="Email" required>
+                    <input type="password" id="signup-password" placeholder="Password" required>
+                    <button type="button" id="signup-submit">Create Account</button>
+                    <p>Already have an account? <button type="button" id="show-login">Login</button></p>
+                    <button type="button" class="home-btn" id="home-signup-btn">Home</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get modal elements
+            const loginModal = document.getElementById('login-modal');
+            const signupForm = document.getElementById('signup-form');
+            const loginForm = document.getElementById('login-form');
+            const closeLoginModal = document.getElementById('close-login-modal');
+            const showSignup = document.getElementById('show-signup');
+            const showLogin = document.getElementById('show-login');
+            const loginBtn = document.getElementById('login-btn');
+            const homeLoginBtn = document.getElementById('home-login-btn');
+            const homeSignupBtn = document.getElementById('home-signup-btn');
+            const startJourneyBtn = document.getElementById('start-journey-btn'); // Button to open signup form
+
+            // Open Login Modal
+            loginBtn.addEventListener('click', function() {
+                loginModal.style.display = 'block';
+                loginForm.style.display = 'block';
+                signupForm.style.display = 'none'; // Ensure signup form is hidden
+            });
+
+            // Close Login Modal
+            closeLoginModal.addEventListener('click', function() {
+                loginModal.style.display = 'none';
+            });
+
+            // Show Signup Form inside Login Modal
+            showSignup.addEventListener('click', function() {
+                loginForm.style.display = 'none'; // Hide login form
+                signupForm.style.display = 'block'; // Show signup form
+            });
+
+            // Show Login Form inside Signup Modal
+            showLogin.addEventListener('click', function() {
+                signupForm.style.display = 'none'; // Hide signup form
+                loginForm.style.display = 'block'; // Show login form
+            });
+
+            // Close Modal when Home Button is clicked (Login page)
+            homeLoginBtn.addEventListener('click', function() {
+                loginModal.style.display = 'none';
+            });
+
+            // Close Modal when Home Button is clicked (Signup page)
+            homeSignupBtn.addEventListener('click', function() {
+                loginModal.style.display = 'none';
+            });
+
+            // Start your skincare journey button opens the signup form
+            startJourneyBtn.addEventListener('click', function() {
+                loginModal.style.display = 'block'; // Open the modal
+                loginForm.style.display = 'none';  // Hide login form
+                signupForm.style.display = 'block'; // Show signup form
+            });
+
+            // Signup Submission
+            document.getElementById('signup-submit').addEventListener('click', async function() {
+                const username = document.getElementById('signup-username').value;
+                const email = document.getElementById('signup-email').value;
+                const password = document.getElementById('signup-password').value;
+
+                const response = await fetch('http://localhost:3000/api/users/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, email, password })
+                });
+
+                if (response.ok) {
+                    alert('Signup successful! You can now log in.');
+                    document.getElementById('login-modal').style.display = 'none'; // Close the modal after success
+                } else {
+                    const message = await response.text();
+                    alert('Error: ' + message);
+                }
+            });
+
+            // Login Submission
+            document.getElementById('login-submit').addEventListener('click', async function() {
+                const username = document.getElementById('login-username').value;
+                const password = document.getElementById('login-password').value;
+
+                const response = await fetch('http://localhost:3000/api/users/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password }),
+                    credentials: 'include' // Important for session handling
+                });
+
+                if (response.ok) {
+                    window.location.href = 'user_page.html'; // Redirect to user page
+                } else {
+                    const message = await response.json();
+                    alert('Error: ' + message.message); // Show error message
+                }
+            });
+
+            // Ensure modal opens correctly and closes when clicking outside
+            window.onclick = function(event) {
+                if (event.target === loginModal) {
+                    loginModal.style.display = 'none';
+                }
+            };
+        });
+    </script>
+</body>
+</html>
